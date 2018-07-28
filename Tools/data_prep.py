@@ -6,7 +6,8 @@ import random
 import nltk
 from nltk.corpus import stopwords
 from nltk import word_tokenize
-from keras.preprocessing.sequence import pad_sequences
+import pickle
+#from keras.preprocessing.sequence import pad_sequences
 
 
 def overview_selected_files(path, file_ending):
@@ -96,3 +97,35 @@ def padding_x_y(words_char_index, words_char_index_corrupted, max_len):
     words_char_index_pad = pad_sequences(words_char_index, max_len)
     words_char_index_corrupted_pad = pad_sequences(words_char_index_corrupted, max_len)
     return words_char_index_pad, words_char_index_corrupted_pad
+
+def clean_text(text):
+    '''Remove unwanted characters and extra spaces from the text'''
+    text = re.sub(r'\n', ' ', text) 
+    text = re.sub(r'[{}@_*>()\\#%+=\[\]~~ᵒ·┌í×ö⁄&üŒ½âàÆîû┼└çÖºê$∞œ°│Üä…ÉÈïñ£ô–]','', text) # TODO: add ÆØÅ + diacritics
+    text = re.sub('a0','', text)
+    text = re.sub('\'92t','\'t', text)
+    text = re.sub('\'92s','\'s', text)
+    text = re.sub('\'92m','\'m', text)
+    text = re.sub('\'92ll','\'ll', text)
+    text = re.sub('\'91','', text)
+    text = re.sub('\'92','', text)
+    text = re.sub('\'93','', text)
+    text = re.sub('\'94','', text)
+    text = re.sub('\.','. ', text)
+    text = re.sub('\!','! ', text)
+    text = re.sub('\?','? ', text)
+    text = re.sub(' +',' ', text)
+    text = re.sub('\ufeff',' ', text)
+    text = re.sub('’',"'", text)
+    text = re.sub('“','"', text)
+    text = re.sub('”','"', text)
+    text = re.sub(r'www.*?\s',' ', text) # Todo: fix
+    return text
+
+def save_pickle(object, path, name):
+    with open(path + name + '.pkl','wb') as f:
+        pickle.dump(object, f, pickle.HIGHEST_PROTOCOL)
+        
+def load_pickle(path, name):
+    with open(path + name + '.pkl','rb') as f:
+        return pickle.load(f)

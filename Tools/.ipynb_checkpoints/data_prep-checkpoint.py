@@ -1,3 +1,5 @@
+import os
+
 def overview_selected_files(path, file_ending):
 	'''
 	Overview ..
